@@ -9,6 +9,8 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 
+import {NativeModules} from 'react-native';
+
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android:
@@ -21,14 +23,17 @@ export default class App extends Component<Props> {
 
   constructor(props:Props) {
     super(props);
-    this.state = {device_name:''};
+    this.state = {osInfo:''};    
+    var DeviceInformation = NativeModules.DeviceInformation;
+    DeviceInformation.getOSInfo((os, version) => {
+        this.setState({osInfo: `${os} ${version}`});
+    });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Button title='Test' onPress={() => this.setState({device_name:'hoge'})} />
-        <Text>{this.state.device_name}</Text>
+        <Text>OS:{this.state.osInfo}</Text>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
         <Text style={styles.instructions}>{instructions}</Text>
